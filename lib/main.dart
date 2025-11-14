@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'about_page.dart';
+import 'search_page.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 void main() {
@@ -770,6 +771,16 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     final List<Widget> _pages = [
       _buildReaderView(),
+      SearchPage(
+        data: data,
+        onChapterSelected: (index) {
+          setState(() {
+            currentIndex = index;
+            _selectedNavIndex = 0; // Navigate back to reader
+          });
+        },
+        currentFont: currentFont,
+      ),
       _buildLibraryView(),
       _buildSettingsView(),
       const AboutPage(),
@@ -808,6 +819,11 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin {
             label: 'القراءة',
           ),
           NavigationDestination(
+            icon: Icon(Icons.search_outlined),
+            selectedIcon: Icon(Icons.search),
+            label: 'بحث',
+          ),
+          NavigationDestination(
             icon: Icon(Icons.library_books_outlined),
             selectedIcon: Icon(Icons.library_books),
             label: 'المكتبة',
@@ -828,7 +844,7 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin {
           ? FloatingActionButton.extended(
               onPressed: () {
                 setState(() {
-                  _selectedNavIndex = 1;
+                  _selectedNavIndex = 2; // Library is now at index 2
                 });
               },
               icon: const Icon(Icons.list),
@@ -841,10 +857,12 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin {
   String _getAppBarTitle() {
     switch (_selectedNavIndex) {
       case 1:
-        return 'المكتبة';
+        return 'بحث';
       case 2:
-        return 'الإعدادات';
+        return 'المكتبة';
       case 3:
+        return 'الإعدادات';
+      case 4:
         return 'عنا';
       default:
         return 'شرح قطرالندى';
